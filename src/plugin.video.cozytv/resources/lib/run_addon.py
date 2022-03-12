@@ -14,7 +14,6 @@ import xbmcaddon
 
 import requests.api
 import json
-from bs4 import BeautifulSoup
 import re
 
 _url = ""
