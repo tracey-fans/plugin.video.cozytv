@@ -1,0 +1,29 @@
+# Kodi Media Center language file
+# Addon Name: Cozy TV
+# Addon id: plugin.video.cozytv
+# Addon Provider: tracey-fans
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.cozytv\n"
+"Report-Msgid-Bugs-To: https://github.com/tracey-fans/plugin.video.cozytv\n"
+"POT-Creation-Date: 2022-03-12 10:29+0000\n"
+"PO-Revision-Date: 2022-03-12 10:29+0000\n"
+"Last-Translator: tracey-fans\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Cozy TV"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Cozy TV Add-on"
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "The use of this add-on may not be legal in your country of residence - please check with your local laws before installing."
+msgstr ""
