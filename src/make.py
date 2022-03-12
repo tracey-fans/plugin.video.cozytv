@@ -6,6 +6,8 @@ import sys
 import subprocess
 import pathlib
 import shutil
+import xml.etree.ElementTree as ET
+import warnings
 
 
 
@@ -14,7 +16,7 @@ __plugin_name__ = "plugin.video.cozytv"
 
 
 
-def build():
+def build(python_ver=3):
   
     _ZIP_NAME = "Cozytv.zip"
     _ROOT_NAME = __plugin_name__
@@ -37,6 +39,8 @@ def build():
         # Build on windows
 
         # Note: this is untested!
+        warnings.warn("Building on Windows is untested. It might work, it might not...")
+        
 
         subprocess.run(["zip", "-rq", f"../{_ZIP_NAME}", f"./{_ROOT_NAME}"], cwd=_BUILD_DIR)
         return
@@ -111,6 +115,16 @@ def build():
             subprocess.run(["7z", "rn", _ZIP_NAME, f"{_ROOT_NAME}/resources/language/resource.language.en_gb/STRINGS.PO", f"{_ROOT_NAME}/resources/language/resource.language.en_gb/strings.po"], stdout=_NULL_DEV)
 
 
+    _version_str = None
+
+    xml = ET.parse(f"{_ROOT_NAME}/addon.xml")
+    for item in xml.getroot().items():
+        if item[0] == 'version':
+            _version_str = item[1]
+
+
+    if _version_str is None:
+        raise Exception("Cannot build this plugin; file <addon.xml> doesn't seem to have a version string")
 
 
 
@@ -138,6 +152,21 @@ def build():
     shutil.copyfile(pathlib.Path("..").joinpath("LICENSE"), pathlib.Path(_BUILD_DIR).joinpath(_ROOT_NAME, "LICENSE.md"))
 
 
+    addon_file = pathlib.Path(_BUILD_DIR, _ROOT_NAME, "addon.xml").read_text()
+    is_py2 = (addon_file.find('<import addon="xbmc.python" version="2.26.0"/>') >= 0)
+    is_py3 = (addon_file.find('<import addon="xbmc.python" version="3.0.0"/>') >= 0)
+    if not is_py2 and not is_py3:
+        raise Exception("Something's wrong with <addon.xml> file; should specify a Python version")
+    elif is_py2 and is_py3:
+        raise Exception("Something's wrong with <addon.xml> file; should only specify one Python version")
+    
+    if is_py2 and python_ver==3:
+        addon_file = addon_file.replace('<import addon="xbmc.python" version="2.26.0"/>', '<import addon="xbmc.python" version="3.0.0"/>')
+    elif is_py3 and python_ver==2:
+        addon_file = addon_file.replace('<import addon="xbmc.python" version="3.0.0"/>', '<import addon="xbmc.python" version="2.26.0"/>')
+
+    pathlib.Path(_BUILD_DIR, _ROOT_NAME, "addon.xml").write_text(addon_file)
+
 
     if sys.platform.startswith("linux"):
         build_linux()
@@ -145,4 +174,13 @@ def build():
         build_windows()
 
 
-build()
+    if python_ver == 2:
+        shutil.copyfile(_ZIP_NAME, pathlib.Path("..", "zips", f"{_ROOT_NAME}-{_version_str}.zip"))
+    elif python_ver == 3:
+        shutil.copyfile(_ZIP_NAME, pathlib.Path("..", "zips", f"{_ROOT_NAME}-{_version_str}-matrix.1.zip"))
+    else:
+        raise Exception("Could not copy zip file; need to specify either Python 2 or Python 3")
+    
+
+build(python_ver=2)
+build(python_ver=3)
