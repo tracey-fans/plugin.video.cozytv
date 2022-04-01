@@ -36,20 +36,24 @@ def list_categories():
     is available, and it is hard-coded.
     """
     
+    r = requests.api.get(urljoin('https://api.cozy.tv', 'cache/homepage'))
+    j = json.loads(r.text)
     
-    img_lnk = "https://prd.foxtrotstream.xyz/a/av/fb67015b68ab4b5c842d29175cdd85c4.webp"
-    info_txt = "Nick Fuentes"
-    list_item = xbmcgui.ListItem(label=info_txt)
-    list_item.setArt({'thumb': img_lnk,
-                      'icon': img_lnk,
-                      'fanart': img_lnk})
-    list_item.setInfo('video', {'title': info_txt, 'genre': info_txt})
+    for USER in j['users']:
+    
+        img_lnk = USER['avatarUrl']
+        info_txt = USER['displayName']
+        list_item = xbmcgui.ListItem(label=info_txt)
+        list_item.setArt({'thumb': img_lnk,
+                          'icon': img_lnk,
+                          'fanart': img_lnk})
+        list_item.setInfo('video', {'title': info_txt, 'genre': info_txt})
 
-    url = get_url(action='listing', category="/cache/nick/replays")
-    # is_folder = True means that this item opens a sub-list of lower level items.
-    is_folder = True
-    # Add our item to the Kodi virtual folder listing.
-    xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
+        url = get_url(action='listing', category="/cache/{0}/replays".format(USER['name']))
+        # is_folder = True means that this item opens a sub-list of lower level items.
+        is_folder = True
+        # Add our item to the Kodi virtual folder listing.
+        xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 
     # Add a sort method for the virtual folder items (alphabetically, ignore articles)
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
@@ -76,14 +80,14 @@ def list_videos(category, page):
     for item in j['replays']:
       
         best_title = item['title']
-        best_href = item['id']
+        best_href = "replays/" + item['user'] + "/" + item['id']
 
         if best_href != None:
 
             # Create a list item with a text label and a thumbnail image.
             list_item = xbmcgui.ListItem(label=best_title, label2=item['id'])
             # Set additional info for the list item.
-            list_item.setInfo('video', {'title': best_title, 'genre': 'Nick Fuentes'})
+            list_item.setInfo('video', {'title': best_title, 'genre': ''})
             # Set graphics (thumbnail, fanart, banner, poster, landscape etc.) for the list item.
             # Here we use the same image for all items for simplicity's sake.
             #list_item.setArt(
@@ -141,7 +145,7 @@ def play_video(path):
     :type path: str
     """
     
-    SEND_1 = urljoin('https://cozycdn.foxtrotstream.xyz/replays/', 'nick/' + path + '/index.m3u8')
+    SEND_1 = urljoin('https://cozycdn.foxtrotstream.xyz', path + '/index.m3u8')
 
     # Create a playable item with a path to play.
     play_item = xbmcgui.ListItem(path=SEND_1)

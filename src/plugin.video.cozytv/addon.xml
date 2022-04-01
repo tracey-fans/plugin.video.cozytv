@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.cozytv" name="Cozy TV" version="1.0.0" provider-name="tracey-fans">
+<addon id="plugin.video.cozytv" name="Cozy TV" version="1.1.0" provider-name="tracey-fans">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.requests" version="2.12.4"/>
@@ -17,8 +17,6 @@
       <icon>resources/media/icon.png</icon>
       <fanart>resources/media/fanart.jpg</fanart>
       <screenshot>resources/media/screenshot-01.jpg</screenshot>
-      <screenshot>resources/media/screenshot-02.jpg</screenshot>
-      <screenshot>resources/media/screenshot-03.jpg</screenshot>
     </assets>
     <language>en</language>
     <platform>all</platform>
@@ -28,7 +26,7 @@
     <forum></forum>
     <source>https://github.com/tracey-fans/plugin.video.cozytv</source>
     <news>
-Currently work in progress
+v1.1.0 : Now plays all creators (replays only).
     </news>
   </extension>
 </addon>
